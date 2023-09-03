@@ -1,0 +1,69 @@
+### The goal of the task is to create a simple dashboard that accepts the following inputs:
+Chain: [CHAIN] (Default: Ethereum)
+Token: [TOKEN] (Default: ETH)
+From: [DATE_RANGE] (Default: 2018.11.01)
+To: [DATE_RANGE] (Default: 2019.02.01)
+Transaction size in USD: [TRANSACTION_VALUE] (Default: 5000 USD)
+Action: In/Out (Default: In)
+
+The output: 
+All wallets that fulfill the above criteria.
+
+
+WITH
+  new_transfers AS (
+    SELECT
+      {{IN/Out}} AS wallet,
+      evt_tx_hash AS transaction_hash,
+      ROUND(value / POWER(10, {{decimal}}), 2) AS amount,
+      MIN(evt_block_time) AS time
+    FROM
+      erc20_{{Chain}}.evt_Transfer
+    WHERE
+      contract_address = {{token_address}}
+      AND evt_block_time BETWEEN TIMESTAMP '{{from_date}}' AND TIMESTAMP  '{{to_date}}'
+    GROUP BY
+      1,
+      2,
+      3
+    ORDER BY
+      4
+    LIMIT
+      {{Count}}
+  ),
+  prices AS (
+    SELECT
+      AVG(price) AS price,
+      DATE_TRUNC('day', minute) AS day
+    FROM
+      prices.usd
+    WHERE
+      contract_address = {{token_address}}
+      AND blockchain = '{{Chain}}'
+    GROUP BY
+      2
+  ),
+  calculated_data AS (
+    SELECT
+      nt.time AS time,
+      nt.wallet AS address,
+      nt.amount AS amount,
+      nt.amount * p.price AS usd_value,
+      ROUND(p.price, 2) AS token_price,
+      nt.transaction_hash AS transaction_hash
+    FROM
+      new_transfers AS nt
+    LEFT JOIN prices AS p ON date_trunc('minute', nt.time) = p.day
+  )
+SELECT
+  time,
+  address,
+  amount,
+  usd_value,
+  token_price,
+  transaction_hash
+FROM
+  calculated_data
+  GROUP BY 1, 2, 3, 4, 5, 6
+HAVING
+  usd_value >= {{Size}};
