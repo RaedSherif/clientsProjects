@@ -1,7 +1,7 @@
 - 👋 Hi, I’m Raed Sherif!
-- 👀 I’m a DS Bachelor student at IU university!
-- 🌱 I’m currently learning Data Science & Machine Learning.
-- 💞️ I’m looking to collaborate on new projects that involves web scraping, data analysis, visualizations and more!
+- 👀 I’m a DS Bachelor student at IU university and part time freelancer!
+- 🌱 I’m currently learning Data Science, Machine Learning and AI.
+- 💞️ My Technical skills include Python & SQL. 
 - 📫 Reach me on raedaasherif@gmail.com
 
 <!---
