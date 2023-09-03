@@ -1,14 +1,15 @@
-### The goal of the task is to create a simple dashboard that accepts the following inputs:
+/* This query is built on dune.com using trinoSQL. The client request is to create a dashboard that accepts the following inputs:
 Chain: [CHAIN] (Default: Ethereum)
 Token: [TOKEN] (Default: ETH)
 From: [DATE_RANGE] (Default: 2018.11.01)
 To: [DATE_RANGE] (Default: 2019.02.01)
 Transaction size in USD: [TRANSACTION_VALUE] (Default: 5000 USD)
 Action: In/Out (Default: In)
-
 The output: 
 All wallets that fulfill the above criteria.
 
+The code below shows how I was able to deliver on the required tasks. 
+*/
 
 WITH
   new_transfers AS (
